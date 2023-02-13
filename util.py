@@ -70,3 +70,9 @@ def create_new_unas_partial():
         unas.active[pos] = header_labels[idx]
     return unas
 
+
+def get_file_path_dialog(header_text, default_dir):
+    root = tk.Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename(initialdir=default_dir,title=header_text)
+    return file_path
