@@ -23,7 +23,7 @@ disc_rate = 0.95
 afa = 1.27
 
 # stock labels
-empty_stock_labels = ["On stock 1B", "On stock 1 B", "None"]
+empty_stock_labels = ["On stock 1B", "On stock 1 B", "None", "0"]
 
 
 def nagyk_nett_unas_brutt(nagyker_nett):
