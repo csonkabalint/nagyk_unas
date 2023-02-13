@@ -1,5 +1,6 @@
-import openpyxl
+import os
 from openpyxl import load_workbook
+import util
 from util import print_line, get_row_index, ItemNotFoundException, create_new_unas_partial
 from util import eval_stock
 
@@ -131,5 +132,5 @@ if __name__ == '__main__':
             unas_row_copy_stock(wb_unas_new, wb_unas, idx + 1 + 1, 0)
             unas_row_copy(wb_unas_not_found, wb_unas, idx + 1 + 1)
         print_line(print_on, "--------------------------")
-    wb_unas_new.save("unas_2023_01_31.xlsx")
-    wb_unas_not_found.save("wb_unas_not_found_230131.xlsx")
+    wb_unas_new.save("unas_" + date.today().replace("-", "_") + ".xlsx")
+    wb_unas_not_found.save("wb_unas_not_found_" + date.today().replace("-", "_") + ".xlsx")

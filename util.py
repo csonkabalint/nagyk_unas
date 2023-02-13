@@ -1,5 +1,10 @@
+from datetime import date
 from string import ascii_uppercase
 import openpyxl
+import tkinter as tk
+from tkinter import filedialog
+
+
 
 class ItemNotFoundException(Exception):
     """Raised when item not found"""
@@ -76,3 +81,8 @@ def get_file_path_dialog(header_text, default_dir):
     root.withdraw()
     file_path = filedialog.askopenfilename(initialdir=default_dir,title=header_text)
     return file_path
+
+
+def filename_with_date(filename, file_extension):
+    date_string = str(date.today()).replace("-", "_")
+    return filename + "_" + date_string + "." + file_extension
