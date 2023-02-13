@@ -107,8 +107,8 @@ if __name__ == '__main__':
     wb_unas_not_found = create_new_unas_partial()
     wb_unas_new = create_new_unas_partial()
 
-    wb_unas = load_workbook(filename="data/UnasShop_luxory-illat-unas-hu_20230131-180333.xlsx", data_only=True)
-    wb_nagyk = load_workbook(filename="data/Kuld-PRICELIST-AKTUAL-2023.01.31.xlsx", data_only=True)
+    wb_unas = load_workbook(filename=util.get_file_path_dialog("open unas", os.getcwd()), data_only=True)
+    wb_nagyk = load_workbook(filename=util.get_file_path_dialog("open nagyk", os.getcwd()), data_only=True)
 
     for idx, row in enumerate(wb_unas.active.iter_rows(min_col=1, max_col=1, min_row=2)):
         to_find = str(row[unas_refnum_col].value)
