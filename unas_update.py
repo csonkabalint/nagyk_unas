@@ -132,5 +132,5 @@ if __name__ == '__main__':
             unas_row_copy_stock(wb_unas_new, wb_unas, idx + 1 + 1, 0)
             unas_row_copy(wb_unas_not_found, wb_unas, idx + 1 + 1)
         print_line(print_on, "--------------------------")
-    wb_unas_new.save("unas_" + date.today().replace("-", "_") + ".xlsx")
-    wb_unas_not_found.save("wb_unas_not_found_" + date.today().replace("-", "_") + ".xlsx")
+    wb_unas_new.save(util.filename_with_date("unas", "xlsx"))
+    wb_unas_not_found.save(util.filename_with_date("wb_unas_not_found", "xlsx"))
