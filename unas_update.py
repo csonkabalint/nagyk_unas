@@ -91,6 +91,15 @@ def unas_row_copy_stock(unas, unas_old, row, stock):
         unas.active["I" + str(row)] = stock
     str_row = str(row)
 
+def unas_row_copy_stock_men(unas, unas_old, row, stock):
+    alpha = "ABCDEFGHIJKL"
+    for idx, cell_col in enumerate(alpha):
+        pos = cell_col + str(row)
+        unas.active[pos] = unas_old.active[pos].value
+    unas.active["I" + str(row)] = stock
+    unas.active["E" + str(row)] = None
+    unas.active["F" + str(row)] = None
+    str_row = str(row)
 
 def print_unas_row(unas, row):
     alpha = "ABCDEFGHIJKL"
@@ -102,6 +111,8 @@ def print_unas_row(unas, row):
     print(to_print)
 
 
+dotted = 0
+
 if __name__ == '__main__':
     print("nagyk_unas start\n")
 
@@ -111,26 +122,51 @@ if __name__ == '__main__':
     wb_unas = load_workbook(filename=util.get_file_path_dialog("open unas", os.getcwd()), data_only=True)
     wb_nagyk = load_workbook(filename=util.get_file_path_dialog("open nagyk", os.getcwd()), data_only=True)
 
-    for idx, row in enumerate(wb_unas.active.iter_rows(min_col=1, max_col=1, min_row=2)):
+    for idx, row in enumerate(wb_unas.active.iter_rows(min_col=1, max_col=13, min_row=2)): # ffi jelzés miatt lett átírva
         to_find = str(row[unas_refnum_col].value)
         to_find = correct_reference(to_find)
         print_line(print_on, "to find: " + to_find)
 
+        unas_categ = str(row[12].value)
+        ismen = "Férfi" in unas_categ
+        discounted = row[unas_akc_nett_col].value != 0
+
         try:
             row_idx = get_row_index(to_find, wb_nagyk.active)
             row_nagyk = wb_nagyk.active[row_idx]
+
+            ean_nagyk = str(row_nagyk[0].value)
+            #print(ean_nagyk)
+            #if "." in ean_nagyk:
+            #    dotted = dotted + 1
+
             price_nagyk = str(row_nagyk[nagyk_price_col].value)
             stock_nagyk = str(row_nagyk[nagyk_stock_col].value)
             netto_ar, brutto_ar, akc_netto_ar, akc_brutto_ar = calc_prices(float(price_nagyk))
+            if not discounted:
+                akc_netto_ar = 0
+                akc_brutto_ar = 0
+            if ismen:
+                akc_netto_ar = None
+                akc_brutto_ar = None
             stock_unas = eval_stock(stock_nagyk, empty_stock_labels)
+            #add_unas_row_simplified2(wb_unas_new, wb_unas, idx + 1 + 1, netto_ar, brutto_ar, akc_netto_ar, akc_brutto_ar, stock_unas)
             add_unas_row_simplified2(wb_unas_new, wb_unas, idx + 1 + 1, netto_ar, brutto_ar, akc_netto_ar, akc_brutto_ar, stock_unas)
             print_unas_row(wb_unas_new, idx + 2)
 
         except ItemNotFoundException:
             print(str(ItemNotFoundException))
             # TODO kezelni a meg nem talalt rekordokat
-            unas_row_copy_stock(wb_unas_new, wb_unas, idx + 1 + 1, 0)
-            unas_row_copy(wb_unas_not_found, wb_unas, idx + 1 + 1)
+            if len(to_find) > 5:
+                if ismen:
+                    unas_row_copy_stock_men(wb_unas_new, wb_unas, idx + 1 + 1, 0)
+                else:
+                    unas_row_copy_stock(wb_unas_new, wb_unas, idx + 1 + 1, 0)
+                unas_row_copy(wb_unas_not_found, wb_unas, idx + 1 + 1)
+            else:
+                unas_row_copy(wb_unas_new, wb_unas, idx + 1 + 1)
+            ## unas_row_copy(wb_unas_not_found, wb_unas, idx + 1 + 1) ##
         print_line(print_on, "--------------------------")
+    #print(dotted)
     wb_unas_new.save(util.filename_with_date("unas", "xlsx"))
     wb_unas_not_found.save(util.filename_with_date("wb_unas_not_found", "xlsx"))
