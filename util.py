@@ -11,10 +11,12 @@ class ItemNotFoundException(Exception):
     pass
 
 
-def get_row_index(cell_value, work_book):
+
+def get_row_index(cell_value_tofind, work_book):
     for idx, row in enumerate(work_book.iter_rows(min_col=1, max_col=2, min_row=1)):
         for cell in row:
-            if str(cell.value) == cell_value:
+            result =str(cell.value).split(".", 1)[0]  ## kezeli a tizedejegyeket át kéne máshova szervezni!!!
+            if str(result) == cell_value_tofind:
                 print("found")
                 pr_row = ""
                 for c in row:
@@ -75,6 +77,16 @@ def create_new_unas_partial():
         unas.active[pos] = header_labels[idx]
     return unas
 
+
+def create_new_unas_partial_stock_update():
+    unas = openpyxl.Workbook()
+    header_labels = ["Cikkszám", "Termék Név", "Nettó Ár", "Bruttó Ár", "Akciós Nettó Ár", "Akciós Bruttó Ár", "Akció Kezdet", "Akció Lejárat", "Kategória", "Raktárkészlet", "Vásárolható, ha nincs Raktáron", "Változatokhoz Raktárkészlet", "Alacsony készlet"]
+    # TODO "range char"-ra lecserelni ezt a megoldast
+    alpha = "ABCDEFGHIJKLM"
+    for idx, label in enumerate(header_labels):
+        pos = alpha[idx] + "1"
+        unas.active[pos] = header_labels[idx]
+    return unas
 
 def get_file_path_dialog(header_text, default_dir):
     root = tk.Tk()
